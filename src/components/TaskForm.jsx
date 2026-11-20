@@ -19,9 +19,11 @@ function TaskForm({
         if(editingTask){
             setTitle(editingTask.title);
             setDescription(editingTask.description);
+            setCategory(editingTask.category || "")
         } else {
             setTitle("");
             setDescription("");
+            setCategory("");
         } 
     }, [editingTask]);   //The [editingTask] dependency means the effect runs whenever the selected task changes.
 
@@ -39,16 +41,18 @@ function TaskForm({
             onUpdateTask(
                 editingTask.id,
                 title.trim(),
-                description.trim()
+                description.trim(),
+                category
             );
         } else {
         //TaskForm sends the title and description to the parent component.
-        onAddTask(title.trim(), description.trim());
+        onAddTask(title.trim(), description.trim(), category);
         }
 
        //After successfully adding a task, both input fields become empty again.
         setTitle("");
-        setDescription("");        
+        setDescription("");   
+        setCategory("");     
      };
 
   const handleCancel = () => {
@@ -75,7 +79,7 @@ function TaskForm({
 
             <div className="form-group">
                 <label > Category </label>
-                    <select type="dropdown"
+                    <select 
                     value={category}
                     onChange={(e)=> setCategory(e.target.value)}>
 
@@ -83,6 +87,7 @@ function TaskForm({
                         <option value="eng">Engineering</option>
                         <option value="finance">Finance</option>
                         <option value="meet">Meeting</option>
+                        <option value="personal">Personal</option>
                         <option value="sales">Sales</option>
                         <option value="other">Other</option>
 

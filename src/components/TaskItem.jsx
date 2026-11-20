@@ -16,9 +16,13 @@ function TaskItem({task, onEditTask, onDeleteTask, onToggleTask }){
             onChange={() => onToggleTask(task.id)}     
             />
 
-            <h3>{task.title}</h3>
+            <h3>Title: {task.title}</h3>
 
-            <p>{task.description}</p>
+            <p className="task-category">
+                Category: {task.category}
+            </p>
+
+            <p>Description: {task.description}</p>
 
             <span>
                 {task.completed ? "Completed" : "Pending"}

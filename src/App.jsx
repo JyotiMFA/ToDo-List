@@ -8,50 +8,60 @@ import './App.css'
 
 
 function App() {
-  const [tasks, setTasks] = useState(() => {
+const [tasks, setTasks] = useState(() => {
+  try {
     const savedTasks = localStorage.getItem("tasks");
-    return savedTasks ? JSON.parse(savedTasks) : [];    //if nothing is saved, start with empty array
-  });
+    return savedTasks ? JSON.parse(savedTasks) : [];
+  } catch (error) {
+    console.error("Corrupted tasks in localStorage, resetting:", error);
+    localStorage.removeItem("tasks");
+    return [];
+  }
+});
+
+ 
 
   const [editingTask, setEditingTask] = useState(null);
 
   useEffect(() => {
-    localStorage.setItem("tasks",tasks);
-  }, [tasks]);   //dependency array: run this useEffect whenever the tasks value changes
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}, [tasks]);
+
+  
 
 
 
-  //this function receive the title and description from TaskForm
-  const addTask = (title, description, dropdown) => {
+  //this function receive the title, caterory and description from TaskForm
+  const addTask = (title, description, category) => {
     // create a newTask object'
     const newTask = {
       id: Date.now(),  //to generate a unique identifier for every task.
        title,
        description,
-       dropdown,
+       category,
       completed: false   // initially false because task is pending
     };
 
     //update the task array(spread operator(...tasks) copy the existing task, and newTask add the new task at the end)
      setTasks([...tasks, newTask]);
-
-
   };
 
   const editTask = (task) => {
     setEditingTask(task);
   };
 
-  const updateTask = (id, title, description) => {
-    const updatedTasks = tasks.map((task) =>
+
+  const updateTask = (id, title, description, category) => {
+  const updatedTasks = tasks.map((task) =>
     task.id === id
-    ? {...task, title, description}
-    : task
+      ? { ...task, title, description, category}
+      : task
   );
 
   setTasks(updatedTasks);
   setEditingTask(null);
-  };
+};
+
   
 
   const deleteTask = (id) => {
@@ -110,6 +120,7 @@ function App() {
           onEditTask = {editTask}
           onDeleteTask = {deleteTask}
           onToggleTask = {toggleTask}
+          // category = {category}
         />
            
       </section>
